@@ -121,8 +121,17 @@ class SkoolScraper:
         options.add_experimental_option('useAutomationExtension', False)
         
         # Directorio temporal para no mezclar sesiones
-        self.user_data_dir = tempfile.mkdtemp()
+        import tempfile
+        self.user_data_dir = tempfile.mkdtemp(prefix=f"chrome_{int(time.time())}_")
         options.add_argument(f"--user-data-dir={self.user_data_dir}")
+
+        try:
+            os.system("pkill -f chrome")
+            os.system("pkill -f chromedriver")
+            time.sleep(2)
+        except:
+            pass
+
 
         max_retries = 3
         for attempt in range(max_retries):
@@ -136,6 +145,16 @@ class SkoolScraper:
                 if attempt < max_retries - 1:
                     wait_time = (attempt + 1) * 2
                     self.logger.warning(f"⚠️ Intento {attempt + 1}/{max_retries} fallido. Esperando {wait_time} segundos...")
+                    try:
+                        if self.driver:
+                            self.driver.quit()
+                    except:
+                        pass
+                    try:
+                        os.system("pkill -f chrome")
+                        os.system("pkill -f chromedriver")
+                    except:
+                        pass
                     time.sleep(wait_time)
                 else:
                     self.logger.error(f"❌ No se pudo iniciar el navegador después de {max_retries} intentos: {e}")
@@ -185,7 +204,7 @@ class SkoolScraper:
         
     def _setup_database_connection(self):
         # ... (sin cambios)
-        self.connection_string = os.getenv('DATABASE_RND')
+        self.connection_string = os.getenv('DATABASE_URL')
         try:
             conn = psycopg2.connect(self.connection_string)
             conn.close()
@@ -270,8 +289,8 @@ class SkoolScraper:
             #if data['Miembro'] in miembros_monitoreo:
                 #self._log_member_structure(data['Miembro'], parts, miembro_element.text)
 
-            if data['Miembro'] == 'Helen Mishel':
-                print("Debug aquí")
+            #if data['Miembro'] == 'Helen Mishel':
+                #print("Debug aquí")
 
             if data['EmailSkool'].startswith('(Admin)'):
                 data['Otro'] = data['EmailSkool']
@@ -337,13 +356,18 @@ class SkoolScraper:
             self.driver.get(profile_url)
 
             try:
-                WebDriverWait(self.driver, 8).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
             except TimeoutException:
                 self.logger.warning(f"⚠️ Timeout cargando perfil: {profile_url}")
                 return gmail_user, contribution_member, member_data
                 
-            contribution_member = self._safe_extract(By.CSS_SELECTOR, '[class*="styled__TypographyWrapper-sc-70zmwu-0 fFYLQx"]', 'NA_Contrib')
-            
+            #contribution_member = self._safe_extract(By.CSS_SELECTOR, '[class*="styled__TypographyWrapper-sc-70zmwu-0 fFYLQx"]', 'NA_Contrib')
+            try:
+                contribution_member = WebDriverWait(self.driver, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, '[class*="styled__TypographyWrapper-sc-70zmwu-0 fFYLQx"]'))
+                ).text.strip()
+            except:
+                contribution_member = 'NA_Contrib'
             try:
                 buttons = WebDriverWait(self.driver, 5).until(
                     EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button.styled__DropdownButton-sc-13jov82-9')))

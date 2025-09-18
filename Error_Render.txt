@@ -1,0 +1,427 @@
+September 18, 2025 at 2:47 PM
+Search
+Search
+
+Live tail
+GMT-5
+
+Menu
+
+==> Running 'python cronjob.py'
+[ERROR] Error al conectar a PostgreSQL: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🚀 Iniciando el scraper de Skool...
+[INFO] 🚗 Iniciando el navegador Selenium...
+[WARNING] ⚠️ Intento 1/3 fallido. Esperando 2 segundos...
+[WARNING] ⚠️ Intento 2/3 fallido. Esperando 4 segundos...
+[ERROR] ❌ No se pudo iniciar el navegador después de 3 intentos: Message: session not created: probably user data directory is already in use, please specify a unique value for --user-data-dir argument, or don't use --user-data-dir; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x602f92949cba <unknown>
+#1 0x602f923be8e0 <unknown>
+#2 0x602f923f9af5 <unknown>
+#3 0x602f923f42c8 <unknown>
+#4 0x602f924443c6 <unknown>
+#5 0x602f92443a96 <unknown>
+#6 0x602f92435e43 <unknown>
+#7 0x602f924029a8 <unknown>
+#8 0x602f92403621 <unknown>
+#9 0x602f9290d8b8 <unknown>
+#10 0x602f929115e2 <unknown>
+#11 0x602f928f4683 <unknown>
+#12 0x602f92912135 <unknown>
+#13 0x602f928d980f <unknown>
+#14 0x602f929364c8 <unknown>
+#15 0x602f929366a2 <unknown>
+#16 0x602f92948dc3 <unknown>
+#17 0x7f6f923741f5 <unknown>
+[INFO] 🧹 Directorio temporal de Chrome limpiado.
+[INFO] 🚗 Iniciando el navegador Selenium...
+[WARNING] ⚠️ Intento 1/3 fallido. Esperando 2 segundos...
+[WARNING] ⚠️ Intento 2/3 fallido. Esperando 4 segundos...
+[ERROR] ❌ No se pudo iniciar el navegador después de 3 intentos: Message: session not created: probably user data directory is already in use, please specify a unique value for --user-data-dir argument, or don't use --user-data-dir; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x5ec352b86cba <unknown>
+#1 0x5ec3525fb8e0 <unknown>
+#2 0x5ec352636af5 <unknown>
+#3 0x5ec3526312c8 <unknown>
+#4 0x5ec3526813c6 <unknown>
+#5 0x5ec352680a96 <unknown>
+#6 0x5ec352672e43 <unknown>
+#7 0x5ec35263f9a8 <unknown>
+#8 0x5ec352640621 <unknown>
+#9 0x5ec352b4a8b8 <unknown>
+#10 0x5ec352b4e5e2 <unknown>
+#11 0x5ec352b31683 <unknown>
+#12 0x5ec352b4f135 <unknown>
+#13 0x5ec352b1680f <unknown>
+#14 0x5ec352b734c8 <unknown>
+#15 0x5ec352b736a2 <unknown>
+#16 0x5ec352b85dc3 <unknown>
+#17 0x76a6d99b61f5 <unknown>
+[INFO] 🧹 Directorio temporal de Chrome limpiado.
+==> Running 'python cronjob.py'
+[ERROR] Error al conectar a PostgreSQL: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🚀 Iniciando el scraper de Skool...
+[INFO] 🚗 Iniciando el navegador Selenium...
+[INFO] ✅ Navegador iniciado correctamente.
+[INFO] 🔐 Iniciando sesión en Skool...
+[INFO] ...esperando confirmación de login (carga de la página principal)...
+[INFO] ✅ Login exitoso.
+[INFO] Página de miembros cargada correctamente.
+[INFO] 🎯 Objetivo: Extraer 500 miembros
+[INFO] 📄 Página 1: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 1.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 30/500 miembros (6%)
+[INFO] 📄 Página 2: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 1.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 30/500 miembros (6%)
+[INFO] 📄 Página 2: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 1.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 30/500 miembros (6%)
+[INFO] 📄 Página 2: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 1.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 30/500 miembros (6%)
+[INFO] 📄 Página 2: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 1.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 30/500 miembros (6%)
+[INFO] 📄 Página 2: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 2.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 60/500 miembros (12%)
+[INFO] 📄 Página 3: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 3.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 90/500 miembros (18%)
+[INFO] 📄 Página 4: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 4.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 120/500 miembros (24%)
+[INFO] 📄 Página 5: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 5.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 150/500 miembros (30%)
+[INFO] 📄 Página 6: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 6.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 180/500 miembros (36%)
+[INFO] 📄 Página 7: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 7.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 210/500 miembros (42%)
+[INFO] 📄 Página 8: Procesando miembros...
+[ERROR] Error al extraer email: Message: 
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 60/500 miembros (12%)
+[INFO] 📄 Página 3: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 3.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 90/500 miembros (18%)
+[INFO] 📄 Página 4: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 4.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 120/500 miembros (24%)
+[INFO] 📄 Página 5: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 5.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 150/500 miembros (30%)
+[INFO] 📄 Página 6: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 6.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 180/500 miembros (36%)
+[INFO] 📄 Página 7: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 7.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 210/500 miembros (42%)
+[INFO] 📄 Página 8: Procesando miembros...
+[ERROR] Error al extraer email: Message: 
+[INFO] ✔️  Se procesaron 30 miembros en la página 8.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 240/500 miembros (48%)
+[INFO] 📄 Página 9: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 9.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 270/500 miembros (54%)
+[INFO] 📄 Página 10: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 11.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 330/500 miembros (66%)
+[INFO] 📄 Página 12: Procesando miembros...
+[INFO] ✔️  Se procesaron 30 miembros en la página 12.
+[INFO] 💾 Se añadieron 30 registros al CSV.
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 1/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 2/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[INFO] 🔄 Esperando 5 segundos antes de reintentar...
+[WARNING] ⚠️ Error de conexión a PostgreSQL (intento 3/3): connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+[ERROR] ❌ No se pudo guardar en PostgreSQL después de 3 intentos.
+[WARNING] ⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.
+[INFO] 📊 Progreso: 360/500 miembros (72%)
+[INFO] 🏁 No se encontró el botón 'Next'. Fin de la paginación.
+[INFO] --- Proceso de Scraping Finalizado ---
+[INFO] 🔄 Generando nuevo token de acceso de Dropbox...
+[INFO] 🔑 Nuevo token de acceso generado correctamente.
+[INFO] ☁️ Iniciando subida de '/opt/render/project/src/skool_members_20250918_195117.csv' a Dropbox...
+[ERROR] ❌ Error crítico al subir a Dropbox: BadInputError('d1e9343006f84ce1a53427b70f6ccc68', 'Error in call to API function "files/upload": Your app (ID: 7424449) is not permitted to access this endpoint because it does not have the required scope \'files.content.write\'. The owner of the app can enable the scope for the app using the Permissions tab on the App Console.')
+Traceback (most recent call last):
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/requests/models.py", line 976, in json
+    return complexjson.loads(self.text, **kwargs)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/python/Python-3.13.4/lib/python3.13/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/render/project/python/Python-3.13.4/lib/python3.13/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/python/Python-3.13.4/lib/python3.13/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/dropbox/dropbox_client.py", line 623, in raise_dropbox_error_for_resp
+    if res.json()['error'] == 'invalid_grant':
+       ~~~~~~~~^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/requests/models.py", line 980, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/opt/render/project/src/cronjob.py", line 221, in subir_a_dropbox
+    dbx.files_upload(f.read(), dropbox_path, mode=dropbox.files.WriteMode.overwrite)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/dropbox/base.py", line 3214, in files_upload
+    r = self.request(
+        files.upload,
+    ...<2 lines>...
+        f,
+    )
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/dropbox/dropbox_client.py", line 326, in request
+    res = self.request_json_string_with_retry(host,
+                                              route_name,
+    ...<3 lines>...
+                                              request_binary,
+                                              timeout=timeout)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/dropbox/dropbox_client.py", line 476, in request_json_string_with_retry
+    return self.request_json_string(host,
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+                                    route_name,
+                                    ^^^^^^^^^^^
+    ...<3 lines>...
+                                    request_binary,
+                                    ^^^^^^^^^^^^^^^
+                                    timeout=timeout)
+                                    ^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/dropbox/dropbox_client.py", line 595, in request_json_string
+    self.raise_dropbox_error_for_resp(r)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/dropbox/dropbox_client.py", line 631, in raise_dropbox_error_for_resp
+    raise BadInputError(request_id, res.text)
+dropbox.exceptions.BadInputError: BadInputError('d1e9343006f84ce1a53427b70f6ccc68', 'Error in call to API function "files/upload": Your app (ID: 7424449) is not permitted to access this endpoint because it does not have the required scope \'files.content.write\'. The owner of the app can enable the scope for the app using the Permissions tab on the App Console.')
+[INFO] 🛑 Navegador cerrado.
+[INFO] 🧹 Directorio temporal de Chrome limpiado.
+Debug aquí
