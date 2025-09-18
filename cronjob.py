@@ -185,7 +185,7 @@ class SkoolScraper:
         
     def _setup_database_connection(self):
         # ... (sin cambios)
-        self.connection_string = os.getenv('DATABASE_RDN')
+        self.connection_string = os.getenv('DATABASE_RND')
         try:
             conn = psycopg2.connect(self.connection_string)
             conn.close()
