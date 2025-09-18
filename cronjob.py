@@ -105,7 +105,7 @@ class SkoolScraper:
         
         # --- Para depurar, ejecuta en modo normal (con interfaz gráfica) ---
         # Comenta la siguiente línea para ver qué hace el navegador. ¡Es el mejor primer paso!
-        #options.add_argument("--headless=new") 
+        options.add_argument("--headless=new") 
         # --------------------------------------------------------------------
 
         options.add_argument("--no-sandbox")
