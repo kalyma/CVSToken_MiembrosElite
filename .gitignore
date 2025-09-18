@@ -1,0 +1,130 @@
+# Archivo .gitignore para el proyecto Skool Scraper
+
+## Variables de entorno
+variables.env
+.env
+*.env
+
+## Credenciales y configuraciones sensibles
+/config.py
+/secrets/
+/credentials/
+
+## Archivos de salida del scraper
+/output/*
+!output/.gitkeep  # Permite mantener el directorio vacío
+
+## Archivos de registro
+*.log
+/logs/
+pip-log.txt
+pip-delete-this-directory.txt
+
+
+
+## Entornos virtuales
+venv/
+ENV/
+env/
+.venv/
+
+
+## Archivos del sistema
+.DS_Store
+Thumbs.db
+
+## Archivos de IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+## Python
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+
+## Cache y bases de datos locales
+*.sqlite3
+*.db
+
+## ChromeDriver y binarios
+#/chromedriver*
+#/geckodriver*
+
+## Archivos temporales
+*.tmp
+*.temp
+
+## Archivos CSV generados (opcional, si quieres versionarlos quita esta línea)
+*.csv
+Preguntas_AI_17_9_2025.txt
+lista.txt
+*.jpg
+
+## Archivos de Selenium
+/webdrivers/
+
+# Ambientes virtuales
+venv/
+env/
+ENV/
+.venv/
+
+# Archivos de dependencias
+*.log
+pip-log.txt
+pip-delete-this-directory.txt
+Respuesta_exito_Render_chatgpt.txt
+cronjob_inicial_funciono.py
+cronjob_inicial_funciono_perfecto.py
+cronjob_inicial_funciono_1.py
+cronjob_30_m_sin_db.py
+cronjob_base1.py
+cronjob_base2.py
+# Compilaciones y cachés
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.manifest
+*.spec
+
+# Jupyter y notebooks
+.ipynb_checkpoints
+
+# Configuración de IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de entorno
+.env
+*.env
+.env.*
+
+# Bases de datos SQLite
+*.sqlite3
+
+# Archivos de test
+.coverage
+htmlcov/
+Usados/
+
+# Archivos de Docker (si aplicas)
+*.pid
+*.bak
+
+# Otros
+*.db
+*.tar.gz
+*.zip
