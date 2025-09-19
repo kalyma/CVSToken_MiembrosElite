@@ -17,7 +17,7 @@ variables.env
 ## Archivos de registro
 *.log
 /logs/
-pip-log.txt
+Error_Render.txt
 pip-delete-this-directory.txt
 
 
@@ -80,7 +80,7 @@ Respuesta_exito_Render_chatgpt.txt
 cronjob_inicial_funciono.py
 cronjob_inicial_funciono_perfecto.py
 cronjob_inicial_funciono_1.py
-cronjob_30_m_sin_db.py
+cronjob_base.py
 cronjob_base1.py
 cronjob_base2.py
 # Compilaciones y cachés

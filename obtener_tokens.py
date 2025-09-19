@@ -3,6 +3,7 @@ import requests
 from dotenv import load_dotenv
 import os
 import webbrowser
+from urllib.parse import quote
 
 load_dotenv()
 
@@ -13,10 +14,13 @@ def generar_url_autorizacion():
         print("❌ Faltan DROPBOX_APP_KEY en .env")
         return None
     
+    redirect_uri_encoded = quote("https://localhost", safe='')
+    
     url = (f"https://www.dropbox.com/oauth2/authorize?"
            f"client_id={app_key}&"
            f"token_access_type=offline&"
-           f"response_type=code")
+           f"response_type=code&"
+           f"redirect_uri={redirect_uri_encoded}")  # ¡IMPORTANTE!
     return url
 
 def obtener_tokens():
@@ -49,6 +53,11 @@ def obtener_tokens():
         if response.status_code != 200:
             print(f"\n❌ Error de Dropbox (HTTP {response.status_code}):")
             print(response.text)
+            print(f"\n📋 Datos enviados:")
+            print(f"code: {auth_code}")
+            print(f"client_id: {os.getenv('DROPBOX_APP_KEY')}")
+            print(f"client_secret: {os.getenv('DROPBOX_APP_SECRET')}")
+            print(f"redirect_uri: https://localhost")
             return
             
         tokens = response.json()
