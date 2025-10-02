@@ -54,13 +54,20 @@ class SkoolScraper:
         self.global_count = 0
         self.num_members = self._cargar_num_members()
         self._setup_database_connection()
+
         self.header_csv = [
-            "Pag", "Cons_Pag", "Cons_Mbro", "Miembro_SK", "Nivel_SK", "Email_Gmail", 
-            "Ult_Ingreso", "Fec_Unido", "Valor", "Contribucion", "Renueva", "Usuario_SK",
-            "Frase", "Localizado", "Invito", "Dias", "Meses", "Total_Cursos", "Progreso_Total", "Porcentaje_Promedio"
+                "Pag", "Cons_Pag", "Cons_Mbro", "Miembro_SK", "Nivel_SK", "Email_Gmail", 
+                "Ult_Ingreso", "Fec_Unido", "Contribucion", "Usuario_SK",
+                "Localizado", "Invito", "Dias", "Meses", "Total_Cursos", "Progreso_Total", "Porcentaje_Promedio"
         ]
+
+        # Cursos: agregar solo Nombre y Avance (NO Progreso)
         for i in range(1, 30):
-            self.header_csv.extend([f"Curso_{i}_Nombre", f"Curso_{i}_Avance", f"Curso_{i}_Progreso"])
+            self.header_csv.extend([f"Curso_{i}_Nombre", f"Curso_{i}_Avance"])
+
+        # mover Frase a la última columna
+        self.header_csv.append("Frase")
+
 
     def _reiniciar_navegador(self):
         """Reinicia el navegador para evitar problemas de memoria"""
@@ -125,13 +132,6 @@ class SkoolScraper:
         self.user_data_dir = tempfile.mkdtemp(prefix=f"chrome_{int(time.time())}_")
         options.add_argument(f"--user-data-dir={self.user_data_dir}")
 
-        try:
-            os.system("pkill -f chrome")
-            os.system("pkill -f chromedriver")
-            time.sleep(2)
-        except:
-            pass
-
 
         max_retries = 3
         for attempt in range(max_retries):
@@ -148,11 +148,6 @@ class SkoolScraper:
                     try:
                         if self.driver:
                             self.driver.quit()
-                    except:
-                        pass
-                    try:
-                        os.system("pkill -f chrome")
-                        os.system("pkill -f chromedriver")
                     except:
                         pass
                     time.sleep(wait_time)
@@ -289,8 +284,8 @@ class SkoolScraper:
             #if data['Miembro'] in miembros_monitoreo:
                 #self._log_member_structure(data['Miembro'], parts, miembro_element.text)
 
-            #if data['Miembro'] == 'Helen Mishel':
-                #print("Debug aquí")
+            #if data['Miembro'] == 'Laura Ortega':
+               # print("Debug aquí")
 
             if data['EmailSkool'].startswith('(Admin)'):
                 data['Otro'] = data['EmailSkool']
@@ -314,18 +309,6 @@ class SkoolScraper:
                 data['Renueva'] = data['Localiza']
                 data['Localiza'] = data['Otro']
             
-            valor_str = data.get('Valor', '')
-            localiza_str = data.get('Localiza', '')
-            condition1 = not valor_str.startswith('$')
-            condition2 = not valor_str.startswith('Free')
-            condition3 = localiza_str.startswith('Renews')
-            if (condition1 or condition2) and condition3:
-                data['Otro'], data['Valor'], data['Renueva'], data['Localiza'] = data['Valor'], data['Renueva'], data['Localiza'], data['Otro']
-            if data['Localiza'].startswith('Renews'):
-                data['Otro'], data['Localiza'], data['Valor'], data['Renueva'] = data['Localiza'], data['Valor'], data['Renueva'], data['Otro']
-            if data['Localiza'].startswith('Invited by'):
-                data['Invitado'], data['Localiza'] = data['Localiza'], 'N/A'
-
             if data['Activo'].startswith('Active '):
                 data['Activo'] = data['Activo'].split()[1]
             if data['Unido'].startswith('Joined '):
@@ -607,7 +590,9 @@ class SkoolScraper:
             cursos = info_perfil.get('courses', [])
             registro_dict['total_cursos'] = len(cursos)
             registro_dict['progreso_total'] = sum(curso.get('Vr. Progreso', 0) for curso in cursos)
-            registro_dict['porcentaje_promedio'] = registro_dict['progreso_total'] / len(cursos) if cursos else 0
+            
+            registro_dict['porcentaje_promedio'] = registro_dict['progreso_total'] / 29 if cursos else 0
+            registro_dict['porcentaje_promedio'] = f"{registro_dict['porcentaje_promedio']:.2f}"
             
             # Agregar cada curso individualmente al registro
             for j, curso in enumerate(cursos):
@@ -746,20 +731,97 @@ class SkoolScraper:
             except: 
                 pass
 
+    def _save_execution_data(self, end_time, execution_time):
+        """Guarda los datos de ejecución en la base de datos PostgreSQL"""
+        try:
+            # Verificar si hay conexión a la base de datos
+            if not hasattr(self, 'connection_string') or not self.connection_string:
+                self.logger.error("No se puede guardar en scraper_miembros_club: cadena de conexión no disponible.")
+                return
+            
+            # Calcular la próxima ejecución (17 horas después)
+            from datetime import timedelta
+            proxima_ejecucion = end_time + timedelta(hours=17)
+            
+            insert_query = """
+            INSERT INTO scraper_miembros_club (
+                total_miembros_scrapeados,
+                ultima_pagina_scrapeada,
+                hora_inicio,
+                hora_fin,
+                tiempo_total,
+                ultima_ejecucion,
+                proxima_ejecucion,
+                estado,
+                script_ejecutado,
+                archivo_generado
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+
+            params = (
+                self.global_count,  # total_miembros_scrapeados
+                1,  # ultima_pagina_scrapeada - ajusta según tu lógica de paginación
+                self.start_time,  # hora_inicio
+                end_time,  # hora_fin
+                str(execution_time),  # tiempo_total
+                end_time,  # ultima_ejecucion
+                proxima_ejecucion,  # proxima_ejecucion
+                'COMPLETADO',  # estado
+                self.script_name,  # script_ejecutado
+                os.path.basename(self.full_path) if hasattr(self, 'full_path') else 'N/A'  # archivo_generado
+            )
+            
+            max_retries = 3
+            retry_count = 0
+            
+            while retry_count < max_retries:
+                try:
+                    # Crear una nueva conexión para cada intento
+                    with psycopg2.connect(self.connection_string) as conn:
+                        with conn.cursor() as cursor:
+                            cursor.execute(insert_query, params)
+                            conn.commit()
+                            self.logger.info("✅ Datos de ejecución guardados en scraper_miembros_club correctamente.")
+                            return True
+                            
+                except psycopg2.OperationalError as e:
+                    retry_count += 1
+                    self.logger.warning(f"⚠️ Error de conexión a PostgreSQL (intento {retry_count}/{max_retries}): {e}")
+                    if retry_count < max_retries:
+                        self.logger.info("🔄 Esperando 5 segundos antes de reintentar...")
+                        time.sleep(5)
+                except Exception as e:
+                    self.logger.error(f"❌ Error al guardar datos de ejecución en PostgreSQL: {e}")
+                    return False
+            
+            self.logger.error(f"❌ No se pudo guardar en PostgreSQL después de {max_retries} intentos.")
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"❌ Error inesperado en _save_execution_data: {e}")
+            return False
+
     def run(self):
         """
         Orquesta el proceso de scraping. Ahora más simple.
         """
         self.logger.info("🚀 Iniciando el scraper de Skool...")
-        self.full_path = os.path.abspath(f"skool_members_{time.strftime('%Y%m%d_%H%M%S')}.csv")
-
+        self.full_path = os.path.abspath(f"skool_members_elite_{time.strftime('%Y%m%d_%H%M%S')}.csv")
+        self.start_time = datetime.now()
         try:
             if not self._iniciar_driver():
                 return
             
             self.scrape_miembros()
+            # Calcular tiempo de ejecución
+            end_time = datetime.now()
+            execution_time = end_time - self.start_time
             
             self.logger.info("--- Proceso de Scraping Finalizado ---")
+            self.logger.info(f"⏰ Tiempo total de ejecución: {execution_time}")
+            self.logger.info(f"👥 Total de miembros procesados: {self.global_count}")
+            # Guardar datos de ejecución en la base de datos
+            self._save_execution_data(end_time, execution_time)
             
             # La subida a Dropbox se hace al final con el archivo completo
             self.subir_a_dropbox(self.full_path)
@@ -769,6 +831,12 @@ class SkoolScraper:
 
         except Exception as e:
             self.logger.error(f"❌ Error fatal en la ejecución: {e}", exc_info=True)
+            try:
+                end_time = datetime.now()
+                execution_time = end_time - self.start_time
+                self._save_execution_data(end_time, execution_time)
+            except Exception as db_error:
+                self.logger.error(f"❌ Error al guardar datos de ejecución después del fallo: {db_error}")
         finally:
             # Cerrar navegador y limpiar directorio temporal
             if self.driver:

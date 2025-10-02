@@ -83,6 +83,7 @@ cronjob_inicial_funciono_1.py
 cronjob_base.py
 cronjob_base1.py
 cronjob_base2.py
+cronjob_base3.py
 # Compilaciones y cachés
 __pycache__/
 *.py[cod]
