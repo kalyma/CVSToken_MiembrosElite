@@ -744,7 +744,7 @@ class SkoolScraper:
             proxima_ejecucion = end_time + timedelta(hours=17)
             
             insert_query = """
-            INSERT INTO scraper_miembros_club (
+            INSERT INTO scraper_miembros_elite (
                 total_miembros_scrapeados,
                 ultima_pagina_scrapeada,
                 hora_inicio,
