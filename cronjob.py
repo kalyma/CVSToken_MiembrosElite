@@ -58,7 +58,7 @@ class SkoolScraper:
         self.header_csv = [
                 "Pag", "Cons_Pag", "Cons_Mbro", "Miembro_SK", "Nivel_SK", "Email_Gmail", 
                 "Ult_Ingreso", "Fec_Unido", "Contribucion", "Usuario_SK",
-                "Localizado", "Invito", "Dias", "Meses", "Total_Cursos", "Progreso_Total", "Porcentaje_Promedio"
+                "Localizado", "Invito", "Dias", "Meses", "Total_Cursos", "Progreso_Total", "Porcentaje_Promedio", "Estado_Avance"
         ]
 
         # Cursos: agregar solo Nombre y Avance (NO Progreso)
@@ -271,6 +271,33 @@ class SkoolScraper:
             
         except Exception as e:
             self.logger.error(f"Error registrando estructura miembro: {str(e)}")
+
+    def _obtener_fecha_unido_existente(self, email_skool):
+        """
+        Obtiene la fecha_unido más antigua de un miembro si ya existe en la base de datos
+        """
+        try:
+            with psycopg2.connect(self.connection_string) as conn:
+                with conn.cursor() as cursor:
+                    query = """
+                    SELECT MIN(fecha_unido) 
+                    FROM public.miembros_activos_elite_cursos 
+                    WHERE email_skool = %s
+                    """
+                    cursor.execute(query, (email_skool,))
+                    result = cursor.fetchone()
+                    
+                    if result and result[0]:
+                        # Si la fecha es un string, convertirlo a datetime
+                        if isinstance(result[0], str):
+                            return self._parse_fecha_unido(result[0])
+                        else:
+                            return result[0]  # Ya es datetime
+                    return None  # No existe en la base de datos
+                    
+        except Exception as e:
+            self.logger.error(f"❌ Error al verificar fecha_unido existente: {e}")
+            return None
    
     def _extraer_info_miembro(self, miembro_element):
         data = {'Nivel': 'N/A', 'Miembro': 'N/A', 'EmailSkool': 'N/A', 'Chat': 'N/A', 'Membership': 'N/A', 'Frase': 'N/A', 'Activo': 'N/A', 'Unido': 'N/A', 'Valor': 'N/A', 'Renueva': 'N/A', 'Localiza': 'N/A', 'Invito': 'N/A', 'Invitado': 'N/A', 'Otro': 'N/A'}
@@ -284,8 +311,8 @@ class SkoolScraper:
             #if data['Miembro'] in miembros_monitoreo:
                 #self._log_member_structure(data['Miembro'], parts, miembro_element.text)
 
-            #if data['Miembro'] == 'Laura Ortega':
-               # print("Debug aquí")
+            if data['Miembro'] == 'Danna Sofia Romero - Soporte AntoEcom':
+               print("Debug aquí")
 
             if data['EmailSkool'].startswith('(Admin)'):
                 data['Otro'] = data['EmailSkool']
@@ -315,6 +342,8 @@ class SkoolScraper:
                 data['Unido'] = data['Unido'][7:]
             if data['Valor'].startswith('$'):
                 data['Valor'] = data['Valor'].replace('$', '').replace('/month', '').strip()
+
+
 
 
         except Exception as e:
@@ -429,8 +458,14 @@ class SkoolScraper:
         return gmail_user, contribution_member, member_data
 
     def _parse_fecha_unido(self, fecha_str):
-        try: return datetime.strptime(fecha_str.replace('Joined', '').strip(), '%b %d, %Y')
-        except (ValueError, TypeError): return None
+        try:
+            if isinstance(fecha_str, datetime):
+                return fecha_str
+            elif fecha_str:
+                return datetime.strptime(fecha_str.replace('Joined', '').strip(), '%b %d, %Y')
+            return None
+        except (ValueError, TypeError, AttributeError):
+            return None
         
     def _calculate_permanencia(self, fecha_unido_str):
         fecha_unido = self._parse_fecha_unido(fecha_unido_str)
@@ -454,7 +489,8 @@ class SkoolScraper:
                     'renueva': 'Renueva', 'email_skool': 'Usuario_SK', 'frase_personal': 'Frase',
                     'localizacion': 'Localizado', 'invito': 'Invito', 'permanencia_dias': 'Dias',
                     'permanencia_meses': 'Meses', 'total_cursos': 'Total_Cursos', 
-                    'progreso_total': 'Progreso_Total', 'porcentaje_promedio': 'Porcentaje_Promedio'
+                    'progreso_total': 'Progreso_Total', 'porcentaje_promedio': 'Porcentaje_Promedio',
+                    'estado_avance': 'Estado_Avance'
                 }
                 
                 # Agregar mapeo para los cursos
@@ -481,13 +517,14 @@ class SkoolScraper:
         fecha_ejecucion_actual = datetime.now()
         
         # Definir el orden de las columnas incluyendo los cursos
+        # Se agrega estado_avance
         column_order = [
             'email_skool', 'pagina', 'np', 'numero', 'nombre_miembro', 'nivel', 'email_gmail',
             'estado_activo', 'fecha_unido', 'valor_membresia', 'contribucion',
             'renueva', 'frase_personal', 'localizacion', 'invito', 'invitado',
             'script_ejecutado', 'archivo_generado',
             'permanencia_dias', 'permanencia_meses',
-            'total_cursos', 'progreso_total', 'porcentaje_promedio'
+            'total_cursos', 'progreso_total', 'porcentaje_promedio', 'estado_avance'
         ]
 
         # Agregar las columnas para los 29 cursos
@@ -549,6 +586,40 @@ class SkoolScraper:
         
         self.logger.error(f"❌ No se pudo guardar en PostgreSQL después de {max_retries} intentos.")
         return False
+    
+    # se agrega funcion calcular estado de avance
+    def _calcular_estado_avance(self, permanencia_dias, porcentaje_promedio):
+        """
+        Calcula el estado de avance basado en días de permanencia vs progreso real
+        """
+        try:
+            # Convertir porcentaje_promedio a float si es string
+            if isinstance(porcentaje_promedio, str):
+                porcentaje_promedio = float(porcentaje_promedio.replace('%', '').strip())
+            elif porcentaje_promedio is None:
+                porcentaje_promedio = 0.0
+        except (ValueError, TypeError):
+            porcentaje_promedio = 0.0
+        
+        # Si no hay datos de días o porcentaje, retornar estado por defecto
+        if not permanencia_dias or permanencia_dias <= 0:
+            return "SIN DATOS"
+        
+        # Calcular avance esperado según la tabla
+        if permanencia_dias >= 104:
+            avance_esperado = 100.0
+        else:
+            # Fórmula aproximada basada en tu tabla
+            avance_esperado = min(100.0, (permanencia_dias / 104) * 100)
+        
+        # Determinar estado con margen del 2%
+        margen = 2.0
+        if porcentaje_promedio > (avance_esperado + margen):
+            return "MUY BIEN"
+        elif porcentaje_promedio >= (avance_esperado - margen):
+            return "AJUSTADO"
+        else:
+            return "ATRASADO"
 
     def _procesar_pagina(self, page_number, profile_tab_handle):
         self.logger.info(f"📄 Página {page_number}: Procesando miembros...")
@@ -572,13 +643,41 @@ class SkoolScraper:
             
             profile_link = f'https://www.skool.com/{info_miembro["EmailSkool"]}?g=mentoriavipantoecom'
             gmail_user, contribution_member, info_perfil = self._extract_courses_info(profile_link, profile_tab_handle)
-            permanencia_dias, permanencia_meses = self._calculate_permanencia(info_miembro['Unido'])
+            #permanencia_dias, permanencia_meses = self._calculate_permanencia(info_miembro['Unido']) --se modifica para verificar fecha existente
             
+
+            # ✅ VERIFICAR SI EL MIEMBRO YA EXISTE Y OBTENER LA FECHA CORRECTA
+            fecha_unido_correcta = info_miembro['Unido']
+            fecha_existente = self._obtener_fecha_unido_existente(info_miembro['EmailSkool'])
+
+            if fecha_existente:
+                # ✅ EL MIEMBRO YA EXISTE EN LA BD - USAR LA FECHA MÁS ANTIGUA
+                # fecha_existente ya es la más antigua gracias a MIN() en la consulta SQL
+                
+                # Convertir al formato correcto
+                if isinstance(fecha_existente, datetime):
+                    fecha_unido_correcta = fecha_existente.strftime('%b %d, %Y')
+                else:
+                    # Si es string, intentar formatearlo
+                    try:
+                        fecha_dt = self._parse_fecha_unido(str(fecha_existente))
+                        if fecha_dt:
+                            fecha_unido_correcta = fecha_dt.strftime('%b %d, %Y')
+                        else:
+                            fecha_unido_correcta = str(fecha_existente)
+                    except:
+                        fecha_unido_correcta = str(fecha_existente)
+                
+                self.logger.info(f"🔄 Usando fecha existente (más antigua) para {info_miembro['EmailSkool']}")
+
+            # Calcular permanencia con la fecha correcta
+            permanencia_dias, permanencia_meses = self._calculate_permanencia(fecha_unido_correcta)
+
             registro_dict = {
                 'pagina': page_number, 'np': i + 1, 'numero': self.global_count,
                 'nombre_miembro': info_miembro.get('Miembro'), 'nivel': info_miembro.get('Nivel'),
                 'email_gmail': gmail_user, 'estado_activo': info_miembro.get('Activo'), 
-                'fecha_unido': info_miembro.get('Unido'), 'valor_membresia': info_miembro.get('Valor'),
+                'fecha_unido': fecha_unido_correcta, 'valor_membresia': info_miembro.get('Valor'),
                 'contribucion': contribution_member, 'renueva': info_miembro.get('Renueva'),
                 'email_skool': info_miembro.get('EmailSkool'), 'frase_personal': info_miembro.get('Frase'),
                 'localizacion': info_miembro.get('Localiza'), 'invito': info_miembro.get('Invito'),
@@ -592,7 +691,14 @@ class SkoolScraper:
             registro_dict['progreso_total'] = sum(curso.get('Vr. Progreso', 0) for curso in cursos)
             
             registro_dict['porcentaje_promedio'] = registro_dict['progreso_total'] / 29 if cursos else 0
-            registro_dict['porcentaje_promedio'] = f"{registro_dict['porcentaje_promedio']:.2f}"
+            porcentaje_promedio_valor = registro_dict['porcentaje_promedio']  # Guardar como número
+            registro_dict['porcentaje_promedio'] = f"{porcentaje_promedio_valor:.2f}"  # Formatear para CSV
+
+            # ✅ NUEVO: Calcular el estado de avance
+            registro_dict['estado_avance'] = self._calcular_estado_avance(
+                permanencia_dias, 
+                porcentaje_promedio_valor
+            )
             
             # Agregar cada curso individualmente al registro
             for j, curso in enumerate(cursos):

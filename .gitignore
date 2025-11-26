@@ -79,6 +79,8 @@ pip-delete-this-directory.txt
 Respuesta_exito_Render_chatgpt.txt
 cronjob_inicial_funciono.py
 cronjob_inicial_funciono_perfecto.py
+cronjob_funcionando_render_con_fecha_unido.py
+cronjob_funcionando_render.py
 cronjob_inicial_funciono_1.py
 cronjob_base.py
 cronjob_base1.py
