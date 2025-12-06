@@ -311,8 +311,8 @@ class SkoolScraper:
             #if data['Miembro'] in miembros_monitoreo:
                 #self._log_member_structure(data['Miembro'], parts, miembro_element.text)
 
-            if data['Miembro'] == 'Danna Sofia Romero - Soporte AntoEcom':
-               print("Debug aquí")
+            #if data['Miembro'] == 'Danna Sofia Romero - Soporte AntoEcom' or data['Miembro'] == 'Daniel Mancipe - Soporte AntoEcom' or data['Miembro'] == 'Arley Lozano':
+                #print("Debug aquí")
 
             if data['EmailSkool'].startswith('(Admin)'):
                 data['Otro'] = data['EmailSkool']
@@ -326,6 +326,20 @@ class SkoolScraper:
                 data['Renueva'] = data['Localiza']
                 data['Localiza'] = data['Invito']
                 data['Invito'] = data['Otro']
+
+            if data['EmailSkool'].startswith('🔥'):
+                data['Unido'] = data['Otro']
+                data['Otro'] = data['EmailSkool']
+                data['EmailSkool'] = data['Chat']
+                data['Chat'] = data['Membership']
+                data['Membership'] = data['Frase']
+                data['Frase'] = data['Activo']
+                data['Activo'] = data['Unido']
+                data['Valor'] = data['Valor']
+                data['Renueva'] = data['Renueva']
+                data['Localiza'] = data['Localiza']
+                data['Invito'] = data['Invito']
+                data['Invitado'] = data['Invitado']
 
             if data['Frase'].startswith('Active ') or data['Frase'] == '':
                 data['Otro'], data['Renueva'], data['Valor'], data['Unido'], data['Activo'], data['Frase'] = data['Renueva'], data['Valor'], data['Unido'], data['Activo'], data['Frase'], 'N/A'
