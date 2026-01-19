@@ -396,7 +396,7 @@ class SkoolScraper:
                 contribution_member = 'NA_Contrib'
             try:
                 buttons = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button.styled__DropdownButton-sc-13jov82-9')))
+                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button.styled__DropdownButton-sc-1c1jt59-9.bRONbL')))
                 
                 if buttons:
                     buttons[-1].click()
