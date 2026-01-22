@@ -68,7 +68,6 @@ class SkoolScraper:
         # mover Frase a la última columna
         self.header_csv.append("Frase")
 
-
     def _reiniciar_navegador(self):
         """Reinicia el navegador para evitar problemas de memoria"""
         try:
@@ -103,7 +102,7 @@ class SkoolScraper:
     def _cargar_credenciales(self):
         # ... (sin cambios)
         creds = {'email': os.getenv('SKOOL_EMAIL'), 'password': os.getenv('SKOOL_PASSWORD')}
-        if not all(creds.values()): raise ValueError("Faltan credenciales de Skool en .env")
+        if not all(creds.values()): raise ValueError("Faltan credenciales Skool en .env")
         return creds
 
     def _iniciar_driver(self):
