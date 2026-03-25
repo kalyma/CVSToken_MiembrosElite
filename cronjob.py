@@ -446,7 +446,7 @@ class SkoolScraper:
                                         'Avance_Curso': progress_str,
                                         'Vr. Progreso': progress_value,
                                         'Total': progress_total,
-                                        '% Avance': (progress_total * 100) / 29  # Ajustado para 29 cursos
+                                        '% Avance': (progress_total * 100) / 25  # Ajustado para 25 cursos
                                     })
                             else:
                                 self.logger.warning("No se encontraron elementos de cursos")
