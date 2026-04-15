@@ -619,11 +619,11 @@ class SkoolScraper:
             return "SIN DATOS"
         
         # Calcular avance esperado según la tabla
-        if permanencia_dias >= 104:
+        if permanencia_dias >= 71:
             avance_esperado = 100.0
         else:
             # Fórmula aproximada basada en tu tabla
-            avance_esperado = min(100.0, (permanencia_dias / 104) * 100)
+            avance_esperado = min(100.0, (permanencia_dias / 71) * 100)
         
         # Determinar estado con margen del 2%
         margen = 2.0
@@ -703,7 +703,7 @@ class SkoolScraper:
             registro_dict['total_cursos'] = len(cursos)
             registro_dict['progreso_total'] = sum(curso.get('Vr. Progreso', 0) for curso in cursos)
             
-            registro_dict['porcentaje_promedio'] = registro_dict['progreso_total'] / 26 if cursos else 0
+            registro_dict['porcentaje_promedio'] = registro_dict['progreso_total'] / 25 if cursos else 0
             porcentaje_promedio_valor = registro_dict['porcentaje_promedio']  # Guardar como número
             registro_dict['porcentaje_promedio'] = f"{porcentaje_promedio_valor:.2f}"  # Formatear para CSV
 
