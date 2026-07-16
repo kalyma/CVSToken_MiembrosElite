@@ -9,6 +9,7 @@ import dropbox
 import logging
 import requests
 import psycopg2
+import psutil
 import shutil
 import tempfile
 from dotenv import load_dotenv
@@ -16,6 +17,7 @@ from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, InvalidSessionIdException, SessionNotCreatedException
@@ -28,10 +30,10 @@ class SkoolScraper:
         'members': 'https://www.skool.com/mentoriavipantoecom/-/members'
     }
     SELECTORS = {
-        'member_item': '[class*="styled__MemberItemWrapper-"]',
-        'email_input': '#email',
-        'password_input': '#password'
-    }
+    'member_item': '[class*="styled__MemberItemWrapper-"], div[class*="sc-db9ce526-0"]',
+    'email_input': '#email',
+    'password_input': '#password'
+}
     XPATHS = {
         'submit_button': '//button[@type="submit"]',
         'next_button': '//button[.//span[contains(text(), "Next")]]'
@@ -104,46 +106,86 @@ class SkoolScraper:
         creds = {'email': os.getenv('SKOOL_EMAIL'), 'password': os.getenv('SKOOL_PASSWORD')}
         if not all(creds.values()): raise ValueError("Faltan credenciales Skool en .env")
         return creds
+    
+    def _log_memoria(self, etapa: str):
+        """Registra el consumo actual de memoria RAM del proceso de Python."""
+        proceso = psutil.Process(os.getpid())
+        # Convertimos los bytes de RSS (Resident Set Size) a Megabytes
+        mem_ram_mb = proceso.memory_info().rss / (1024 * 1024)
+        self.logger.info(f"📊 [MEMORIA] En '{etapa}': {mem_ram_mb:.2f} MB usados.")
 
     def _iniciar_driver(self):
-        self.logger.info("🚗 Iniciando el navegador Selenium...")
+        self.logger.info("🚗 Iniciando el navegador Selenium (Modo Ultra-Bajo Consumo)...")
         options = Options()
         
-        # --- Para depurar, ejecuta en modo normal (con interfaz gráfica) ---
-        # Comenta la siguiente línea para ver qué hace el navegador. ¡Es el mejor primer paso!
-        options.add_argument("--headless=new") 
-        # --------------------------------------------------------------------
+        # --- 1. CONFIGURACIÓN AGRESIVA DE AHORRO DE RAM (Del Script 1) ---
+        chrome_args = [
+            #"--headless=new",
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu",
+            "--disable-software-rasterizer",
+            "--disable-extensions",
+            "--disable-plugins",
+            "--disable-background-networking",
+            "--disable-background-timer-throttling",
+            "--disable-backgrounding-occluded-windows",
+            "--disable-renderer-backgrounding",
+            "--disable-default-apps",
+            "--disable-sync",
+            "--disable-translate",
+            "--disable-component-update",
+            "--disable-domain-reliability",
+            "--metrics-recording-only",
+            "--mute-audio",
+            "--no-first-run",
+            "--disk-cache-size=0",
+            "--media-cache-size=0",
+            #"--renderer-process-limit=1",  # Clave para Render.com
+            "--disable-crash-reporter",
+            "--disable-logging",
+            "--log-level=3",
+            "--silent",
+            "--window-size=1920,1080",       # Ventana pequeña = Menos consumo
+        ]
+        for arg in chrome_args:
+            options.add_argument(arg)
+            
+        # Desactivar carga de imágenes a nivel experimental
+        prefs = {    
+            "profile.managed_default_content_settings.images": 2,
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False,
+        }
+        options.add_experimental_option("prefs", prefs)
 
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--window-size=1920,1080")
-        options.add_argument("--disable-gpu") # A menudo útil en headless
-        options.add_argument("--enable-unsafe-swiftshader")
-        options.add_argument('--disable-logging')
-        options.add_argument('--log-level=3')
-        
-        # Mantenemos las opciones clave para evitar la detección
+        # --- 2. EVITAR DETECCIÓN BÁSICA (Del Script 2) ---
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
-        
-        # Directorio temporal para no mezclar sesiones
-        import tempfile
+        options.add_experimental_option("useAutomationExtension", False)
+
+        # --- 3. AISLAMIENTO DE SESIÓN (Evita archivos bloqueados en Docker) ---
         self.user_data_dir = tempfile.mkdtemp(prefix=f"chrome_{int(time.time())}_")
         options.add_argument(f"--user-data-dir={self.user_data_dir}")
 
-
+        # --- 4. BUCLE DE REINTENTOS ROBUSTO ---
         max_retries = 3
         for attempt in range(max_retries):
             try:
+                self._log_memoria("antes de iniciar driver") if hasattr(self, "_log_memoria") else None
+                
                 self.driver = webdriver.Chrome(options=options)
-                # Aplicamos el script anti-detección DESPUÉS de iniciar el driver
+                
+                # Script inyectado para enmascarar automatización
                 self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-                self.logger.info("✅ Navegador iniciado correctamente.")
+                
+                self._log_memoria("driver iniciado con éxito") if hasattr(self, "_log_memoria") else None
+                self.logger.info("✅ Navegador en marcha y optimizado.")
                 return True
+                
             except SessionNotCreatedException as e:
                 if attempt < max_retries - 1:
                     wait_time = (attempt + 1) * 2
-                    self.logger.warning(f"⚠️ Intento {attempt + 1}/{max_retries} fallido. Esperando {wait_time} segundos...")
+                    self.logger.warning(f"⚠️ Intento {attempt + 1}/{max_retries} fallido. Reintentando en {wait_time}s...")
                     try:
                         if self.driver:
                             self.driver.quit()
@@ -151,12 +193,11 @@ class SkoolScraper:
                         pass
                     time.sleep(wait_time)
                 else:
-                    self.logger.error(f"❌ No se pudo iniciar el navegador después de {max_retries} intentos: {e}")
+                    self.logger.error(f"❌ No se pudo inicializar Chrome tras {max_retries} intentos: {e}")
                     return False
             except Exception as e:
-                self.logger.error(f"❌ Error inesperado al iniciar el navegador: {e}")
+                self.logger.error(f"❌ Error crítico inesperado al abrir Chrome: {e}")
                 return False
-            
 
     def extract_time(text):
         return text.split()[1] 
@@ -178,9 +219,9 @@ class SkoolScraper:
             # Esto es mucho más fiable.
             self.logger.info("...esperando confirmación de login (carga de la página principal)...")
             #wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.SELECTORS['member_item'])))
-            wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '[class*="styled__GroupLogoWrapper"]')))
+            wait.until(lambda d: "/login" not in d.current_url)
             
-            self.logger.info("✅ Login exitoso.")
+            self.logger.info(f"✅ Login exitoso. URL actual: {self.driver.current_url}")
             return True
         except TimeoutException:
             self.logger.error("❌ Timeout durante el login. La página no cargó a tiempo o las credenciales son incorrectas.")
@@ -198,7 +239,7 @@ class SkoolScraper:
         
     def _setup_database_connection(self):
         # ... (sin cambios)
-        self.connection_string = os.getenv('DATABASE_URL')
+        self.connection_string = os.getenv('DATABASE_LOC')
         try:
             conn = psycopg2.connect(self.connection_string)
             conn.close()
@@ -377,8 +418,12 @@ class SkoolScraper:
         member_data = {'courses': []}  # Inicializar con lista vacía
         
         try:
+            self.logger.info(f"🔀 Cambiando a pestaña de perfil (handle={profile_tab_handle})")
             self.driver.switch_to.window(profile_tab_handle)
+            self.logger.info(f"➡️ Navegando a: {profile_url}")
             self.driver.get(profile_url)
+            self.logger.info(f"🌐 URL actual tras get(): {self.driver.current_url}")
+            self.logger.info(f"📄 Título de la página: {self.driver.title}")
 
             try:
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
@@ -389,16 +434,16 @@ class SkoolScraper:
             #contribution_member = self._safe_extract(By.CSS_SELECTOR, '[class*="styled__TypographyWrapper-sc-70zmwu-0 fFYLQx"]', 'NA_Contrib')
             try:
                 contribution_member = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, '[class*="styled__TypographyWrapper-sc-70zmwu-0 fFYLQx"]'))
+                    EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Contributions')]/preceding-sibling::div[1]"))
                 ).text.strip()
             except:
                 contribution_member = 'NA_Contrib'
             try:
                 buttons = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button.styled__DropdownButton-sc-1c1jt59-9.bRONbL')))
+                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button[class*="sc-c1192d50-9"]')))
                 
                 if buttons:
-                    buttons[-1].click()
+                    self.driver.execute_script("arguments[0].click();", buttons[-1])
                     time.sleep(0.5)
 
                     try:
@@ -406,66 +451,104 @@ class SkoolScraper:
                             EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'Membership settings')]"))
                         ).click()
                         
-                        time.sleep(1)
-                        gmail_user = self._safe_extract(By.CSS_SELECTOR, '[class*="styled__MembershipInfo-sc-gmyn28-1 etpmnD"] span', 'NA_Email')
+                        time.sleep(1.5)
+                        gmail_user = self._safe_extract(By.CSS_SELECTOR, '[class*="sc-5014102b-1"] span', 'NA_Email')
+                        self.logger.info(f"📧 Email extraído: {gmail_user}")
                         
                         #--------Extracción de cursos--------
                         try:
-                            course_elements = WebDriverWait(self.driver, 5).until(
+                            course_elements = WebDriverWait(self.driver, 6).until(
                                 EC.presence_of_all_elements_located(
-                                    (By.CSS_SELECTOR, '.styled__DesktopNavItem-sc-1p35nnr-3.fQvukM')
+                                    (By.XPATH, "//div[contains(text(),'Courses')]")
                                 )
                             )
-                            
-                            if course_elements:
-                                course_elements[0].click()
+                            visibles = [el for el in course_elements if el.is_displayed()]
+                            course_tab = visibles[0] if visibles else (course_elements[0] if course_elements else None)
+
+                            if course_tab is not None:
+                                self.driver.execute_script("arguments[0].click();", course_tab)
                                 time.sleep(2)
+                                self.logger.info("✅ Click en pestaña Courses realizado")
                                 
-                                titles = WebDriverWait(self.driver, 5).until(
-                                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, '[class*="styled__CourseTitle"]'))
-                                )
+                                try:
+                                    titles = []
+                                    progresses = []
+                                    for intento in range(2):
+                                        try:
+                                            titles = WebDriverWait(self.driver, 6).until(
+                                                EC.presence_of_all_elements_located((By.CSS_SELECTOR, '[class*="sc-b7620b6e-4"]'))
+                                            )
+                                            progresses = WebDriverWait(self.driver, 6).until(
+                                                EC.presence_of_all_elements_located((By.CSS_SELECTOR, '[class*="sc-b7620b6e-5"]'))
+                                            )
+                                            if titles:
+                                                break
+                                        except TimeoutException:
+                                            if intento == 0:
+                                                self.logger.warning("⏳ Cursos no cargaron a la primera, reintentando click en Courses...")
+                                                self.driver.execute_script("arguments[0].click();", course_tab)
+                                                time.sleep(2)
+                                            else:
+                                                raise
 
-                                progresses = WebDriverWait(self.driver, 5).until(
-                                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, '[class*="styled__CourseProgress"]'))
-                                )
+                                    self.logger.info(f"📚 Cursos encontrados: {len(titles)} títulos, {len(progresses)} progresos")
 
-                                progress_total = 0
-                                member_data['courses'] = []  # Reiniciar la lista
+                                    progress_total = 0
+                                    member_data['courses'] = []  # Reiniciar la lista
 
-                                for i, (title_el, progress_el) in enumerate(zip(titles, progresses)):
-                                    title = title_el.text.strip()
-                                    progress_str = progress_el.text.strip()
+                                    for i, (title_el, progress_el) in enumerate(zip(titles, progresses)):
+                                        title = title_el.text.strip()
+                                        progress_str = progress_el.text.strip()
 
-                                    clean_str = progress_str.replace('(', '').replace(')', '').replace(' progress', '').strip()
-                                    progress_value = int(clean_str.strip('%')) if '%' in clean_str else 0
-                                    progress_total += progress_value
+                                        clean_str = progress_str.replace('(', '').replace(')', '').replace(' progress', '').strip()
+                                        progress_value = int(clean_str.strip('%')) if '%' in clean_str else 0
+                                        progress_total += progress_value
 
-                                    member_data['courses'].append({
-                                        'Nro_Curso': i + 1,
-                                        'Curso': title,
-                                        'Avance_Curso': progress_str,
-                                        'Vr. Progreso': progress_value,
-                                        'Total': progress_total,
-                                        '% Avance': (progress_total * 100) / 25  # Ajustado para 25 cursos
-                                    })
+                                        member_data['courses'].append({
+                                            'Nro_Curso': i + 1,
+                                            'Curso': title,
+                                            'Avance_Curso': progress_str,
+                                            'Vr. Progreso': progress_value,
+                                            'Total': progress_total,
+                                            '% Avance': (progress_total * 100) / 25  # Ajustado para 25 cursos
+                                        })
+
+                                except TimeoutException:
+                                    self.logger.error("⚠️ Timeout extrayendo información de cursos", exc_info=True)
+                                    try:
+                                        self.driver.save_screenshot("debug_courses_timeout.png")
+                                        with open("debug_courses_timeout.html", "w", encoding="utf-8") as f:
+                                            f.write(self.driver.page_source)
+                                        self.logger.error("📸 Screenshot y HTML de cursos guardados para diagnóstico")
+                                    except Exception as debug_err:
+                                        self.logger.error(f"No se pudo guardar debug de cursos: {debug_err}")
+                                except Exception as e:
+                                    self.logger.error(f"Error menor extrayendo cursos: {e}", exc_info=True)
                             else:
                                 self.logger.warning("No se encontraron elementos de cursos")
-                                
+
                         except TimeoutException:
-                            self.logger.debug("⚠️ Timeout extrayendo información de cursos")
+                            self.logger.error("⚠️ Timeout en pestaña Courses (no cargaron los cursos tras reintento)", exc_info=True)
                         except Exception as e:
-                            self.logger.debug(f"Error menor extrayendo cursos: {e}")
-                        #--------Fin extracción cursos--------
+                            self.logger.error(f"Error accediendo a pestaña Courses: {e}", exc_info=True)
+                            #--------Fin extracción cursos--------
                         
                     except TimeoutException:
-                        self.logger.debug("⚠️ Timeout en membership settings")
+                        self.logger.error("⚠️ Timeout en membership settings", exc_info=True)
                         
             except Exception as e:
-                self.logger.error(f"Error al extraer email: {e}")
+                self.logger.error(f"Error al extraer email: {e}", exc_info=True)
                 
         except Exception as e:
             self.logger.error(f"Error extrayendo información del perfil: {e}")
         finally:
+            try:
+                # Cerrar cualquier modal (Courses / Membership settings) que haya quedado abierto,
+                # para que no se vea "fantasma" al navegar al siguiente perfil.
+                self.driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.ESCAPE)
+                time.sleep(0.3)
+            except:
+                pass
             self.driver.switch_to.window(original_window)
         
         return gmail_user, contribution_member, member_data
@@ -721,6 +804,13 @@ class SkoolScraper:
 
             datos_pagina_dicts.append(registro_dict)
 
+            # ✅ GUARDADO INMEDIATO POR MIEMBRO: si el navegador se cae más adelante
+            # en esta misma página, lo ya procesado NO se pierde.
+            self.save_page_to_csv([registro_dict], self.full_path)
+            db_success = self.save_page_to_database([registro_dict])
+            if not db_success:
+                self.logger.warning(f"⚠️ No se pudo guardar en BD el registro de {registro_dict.get('email_skool')}")
+
         self.logger.info(f"✔️  Se procesaron {len(datos_pagina_dicts)} miembros en la página {page_number}.")
         return datos_pagina_dicts
 
@@ -740,6 +830,13 @@ class SkoolScraper:
             self.logger.info("Página de miembros cargada correctamente.")
         except TimeoutException:
             self.logger.error("No se pudo cargar la página de miembros después de navegar a ella. Terminando.")
+            try:
+                self.driver.save_screenshot("debug_members_timeout.png")
+                self.logger.error(f"URL en el momento del timeout: {self.driver.current_url}")
+                with open("debug_members_timeout.html", "w", encoding="utf-8") as f:
+                    f.write(self.driver.page_source)
+            except:
+                pass
             return
 
         page_number = 1
@@ -800,12 +897,9 @@ class SkoolScraper:
                 if not datos_pagina:
                     self.logger.info("🏁 Página sin datos. Fin de la paginación.")
                     break
-                
-                self.save_page_to_csv(datos_pagina, self.full_path)
-                
-                db_success = self.save_page_to_database(datos_pagina)
-                if not db_success:
-                    self.logger.warning("⚠️ No se pudieron guardar los datos en la base de datos, pero el proceso continuará.")
+
+                # Nota: el guardado en CSV y BD ya ocurre miembro por miembro
+                # dentro de _procesar_pagina, para no perder datos si Chrome se cae a mitad de página.
 
                 if self.num_members > 0:
                     porcentaje = min(100, int((self.global_count / self.num_members) * 100))
@@ -943,7 +1037,7 @@ class SkoolScraper:
             self._save_execution_data(end_time, execution_time)
             
             # La subida a Dropbox se hace al final con el archivo completo
-            self.subir_a_dropbox(self.full_path)
+            #self.subir_a_dropbox(self.full_path)
             # if os.path.exists(self.full_path):
             #     os.remove(self.full_path)
             #     self.logger.info(f"🗑️ Archivo local '{self.full_path}' eliminado.")
