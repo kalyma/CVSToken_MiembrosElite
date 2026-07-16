@@ -120,7 +120,7 @@ class SkoolScraper:
         
         # --- 1. CONFIGURACIÓN AGRESIVA DE AHORRO DE RAM (Del Script 1) ---
         chrome_args = [
-            #"--headless=new",
+            "--headless=new",
             "--no-sandbox",
             "--disable-dev-shm-usage",
             "--disable-gpu",
@@ -239,7 +239,7 @@ class SkoolScraper:
         
     def _setup_database_connection(self):
         # ... (sin cambios)
-        self.connection_string = os.getenv('DATABASE_LOC')
+        self.connection_string = os.getenv('DATABASE_URL')
         try:
             conn = psycopg2.connect(self.connection_string)
             conn.close()
@@ -1037,7 +1037,7 @@ class SkoolScraper:
             self._save_execution_data(end_time, execution_time)
             
             # La subida a Dropbox se hace al final con el archivo completo
-            #self.subir_a_dropbox(self.full_path)
+            self.subir_a_dropbox(self.full_path)
             # if os.path.exists(self.full_path):
             #     os.remove(self.full_path)
             #     self.logger.info(f"🗑️ Archivo local '{self.full_path}' eliminado.")
